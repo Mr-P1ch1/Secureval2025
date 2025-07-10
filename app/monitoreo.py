@@ -125,7 +125,8 @@ def calcular_kpis(dominio):
             'total_cves': 0,
             'riesgo_promedio': 0,
             'subdominios_alto_riesgo': 0,
-            'tecnologias_vulnerables': 0
+            'tecnologias_vulnerables': 0,
+            'cvss_max': 0.0
         }
         
         # Leer resumen si existe
@@ -151,6 +152,28 @@ def calcular_kpis(dominio):
             
             if riesgos:
                 kpis['riesgo_promedio'] = sum(riesgos) / len(riesgos)
+        
+        # Leer archivo de riesgos detallado para extraer CVSS máximo
+        riesgo_file = resultados_dir / "riesgo.json"
+        if riesgo_file.exists():
+            riesgo_data = leer_json_seguro(riesgo_file)
+            if riesgo_data and isinstance(riesgo_data, list):
+                cvss_scores = []
+                for item in riesgo_data:
+                    if isinstance(item, dict):
+                        cvss_max_item = item.get('cvss_max', 0)
+                        if cvss_max_item and cvss_max_item > 0:
+                            cvss_scores.append(cvss_max_item)
+                
+                if cvss_scores:
+                    kpis['cvss_max'] = max(cvss_scores)
+                    print(f"🔍 CVSS máximo extraído para {dominio}: {kpis['cvss_max']}")
+                else:
+                    print(f"⚠️ No se encontraron valores CVSS válidos en {dominio}")
+            else:
+                print(f"❌ No se pudo leer el archivo riesgo.json para {dominio}")
+        else:
+            print(f"📄 Archivo riesgo.json no encontrado para {dominio}")
         
         # Leer tecnologías si existe
         tecnologias_file = resultados_dir / "tecnologias.json"
@@ -189,11 +212,14 @@ def mostrar_kpis_en_gui(kpis, texto_widget):
     texto_widget.insert(tk.END, f"🔧 Total de tecnologías identificadas: {kpis['total_tecnologias']}\n")
     texto_widget.insert(tk.END, f"🚨 Total de CVEs encontrados: {kpis['total_cves']}\n")
     texto_widget.insert(tk.END, f"📈 Riesgo promedio general: {kpis['riesgo_promedio']:.2f}/10\n")
+    texto_widget.insert(tk.END, f"⚡ CVSS máximo detectado: {kpis.get('cvss_max', 0):.1f}/10\n")
     texto_widget.insert(tk.END, f"⚠️ Subdominios de alto riesgo (≥8.0): {kpis['subdominios_alto_riesgo']}\n")
     texto_widget.insert(tk.END, f"🔓 Tecnologías con vulnerabilidades: {kpis['tecnologias_vulnerables']}\n\n")
     
     # Evaluación del nivel de riesgo
     riesgo = kpis['riesgo_promedio']
+    cvss_max = kpis.get('cvss_max', 0)
+    
     if riesgo >= 8.0:
         nivel = "🔴 CRÍTICO"
         recomendacion = "Acción inmediata requerida"
@@ -208,7 +234,27 @@ def mostrar_kpis_en_gui(kpis, texto_widget):
         recomendacion = "Mantener buenas prácticas"
     
     texto_widget.insert(tk.END, f"🎯 NIVEL DE RIESGO: {nivel}\n")
-    texto_widget.insert(tk.END, f"💡 RECOMENDACIÓN: {recomendacion}\n\n")
+    texto_widget.insert(tk.END, f"💡 RECOMENDACIÓN: {recomendacion}\n")
+    
+    # Evaluación adicional basada en CVSS máximo
+    if cvss_max >= 9.0:
+        criticidad_cvss = "🔴 CRÍTICO"
+        alerta_cvss = "¡VULNERABILIDADES CRÍTICAS DETECTADAS!"
+    elif cvss_max >= 7.0:
+        criticidad_cvss = "🟠 ALTO"
+        alerta_cvss = "Vulnerabilidades de alto impacto presentes"
+    elif cvss_max >= 4.0:
+        criticidad_cvss = "🟡 MEDIO"
+        alerta_cvss = "Vulnerabilidades de impacto medio detectadas"
+    elif cvss_max > 0:
+        criticidad_cvss = "🟢 BAJO"
+        alerta_cvss = "Vulnerabilidades de bajo impacto"
+    else:
+        criticidad_cvss = "✅ SIN CVSS"
+        alerta_cvss = "No se detectaron vulnerabilidades con CVSS"
+    
+    texto_widget.insert(tk.END, f"⚡ NIVEL CVSS MÁXIMO: {criticidad_cvss} ({cvss_max:.1f}/10)\n")
+    texto_widget.insert(tk.END, f"🚨 ALERTA: {alerta_cvss}\n\n")
 
 def mostrar_resumen(dominio, texto_widget):
     """Muestra un resumen detallado del análisis"""
@@ -216,6 +262,25 @@ def mostrar_resumen(dominio, texto_widget):
         # Buscar en el directorio resultados del nivel padre
         resultados_dir = current_dir.parent / "resultados" / dominio
         resumen_file = resultados_dir / "resumen.json"
+        riesgo_file = resultados_dir / "riesgo.json"
+        
+        # Crear diccionario de CVSS por subdominio
+        cvss_por_subdominio = {}
+        if riesgo_file.exists():
+            riesgo_data = leer_json_seguro(riesgo_file)
+            if riesgo_data and isinstance(riesgo_data, list):
+                for item in riesgo_data:
+                    if isinstance(item, dict):
+                        subdominio = item.get('subdominio', '')
+                        cvss_max = item.get('cvss_max', 0)
+                        if subdominio:
+                            if subdominio not in cvss_por_subdominio:
+                                cvss_por_subdominio[subdominio] = []
+                            cvss_por_subdominio[subdominio].append(cvss_max)
+                
+                # Calcular CVSS máximo por subdominio
+                for sub in cvss_por_subdominio:
+                    cvss_por_subdominio[sub] = max(cvss_por_subdominio[sub]) if cvss_por_subdominio[sub] else 0
         
         if resumen_file.exists():
             resumen = leer_json_seguro(resumen_file)
@@ -226,9 +291,12 @@ def mostrar_resumen(dominio, texto_widget):
                 
                 # Mostrar solo los primeros 5 subdominios para no saturar
                 for i, (subdominio, info) in enumerate(list(resumen.items())[:5], 1):
+                    cvss_max_sub = cvss_por_subdominio.get(subdominio, 0)
+                    
                     texto_widget.insert(tk.END, f"{i}. 🔹 {subdominio}\n")
                     texto_widget.insert(tk.END, f"   • Tecnologías: {info.get('total_tecnologias', 0)}\n")
                     texto_widget.insert(tk.END, f"   • CVEs: {info.get('total_cves', 0)}\n")
+                    texto_widget.insert(tk.END, f"   • CVSS máximo: {cvss_max_sub:.1f}/10\n")
                     texto_widget.insert(tk.END, f"   • Riesgo máximo: {info.get('riesgo_max', 0):.2f}/10\n")
                     texto_widget.insert(tk.END, f"   • Riesgo promedio: {info.get('riesgo_promedio', 0):.2f}/10\n\n")
                 
@@ -352,17 +420,29 @@ def crear_grafico_kpis(kpis_data, frame_parent):
             ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(valores_metricas)*0.02,
                     str(valor), ha='center', va='bottom', fontweight='bold', fontsize=9)
         
-        # Gráfico 3: Indicador de riesgo
+        # Gráfico 3: Indicadores de riesgo y CVSS
         riesgo = kpis_data.get('riesgo_promedio', 0)
+        cvss_max = kpis_data.get('cvss_max', 0)
+        
+        # Subgráfico para riesgo promedio
         colors_gauge = ['#2ecc71' if riesgo < 4 else '#f39c12' if riesgo < 6 else '#e67e22' if riesgo < 8 else '#e74c3c']
         
         wedges = ax3.pie([riesgo, 10-riesgo], colors=[colors_gauge[0], '#ecf0f1'], 
                         startangle=90, counterclock=False, 
                         wedgeprops=dict(width=0.3))
         
-        ax3.text(0, 0, f'{riesgo:.1f}', ha='center', va='center', 
-                fontsize=16, fontweight='bold')
-        ax3.set_title('Riesgo Promedio General', fontweight='bold', fontsize=12)
+        # Texto del riesgo promedio
+        ax3.text(0, 0.3, f'{riesgo:.1f}', ha='center', va='center', 
+                fontsize=14, fontweight='bold')
+        ax3.text(0, -0.3, 'Riesgo', ha='center', va='center', 
+                fontsize=10, fontweight='bold')
+        
+        # Indicador adicional de CVSS máximo como barra
+        cvss_colors = ['#2ecc71' if cvss_max < 4 else '#f39c12' if cvss_max < 7 else '#e67e22' if cvss_max < 9 else '#e74c3c']
+        ax3.text(0, -0.7, f'CVSS Max: {cvss_max:.1f}', ha='center', va='center', 
+                fontsize=10, fontweight='bold', color=cvss_colors[0])
+        
+        ax3.set_title('Indicadores de Seguridad', fontweight='bold', fontsize=12)
         
         # Gráfico 4: Comparativa de seguridad
         categorias = ['Tecnologías\nSeguras', 'Tecnologías\nVulnerables']

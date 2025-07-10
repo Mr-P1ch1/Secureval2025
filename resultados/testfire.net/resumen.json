@@ -1,0 +1,66 @@
+{
+    "http://altoro.testfire.net": {
+        "tecnologias": [
+            "HttpOnly",
+            "HTTPServer",
+            "Cookies",
+            "Country",
+            "Apache",
+            "IP",
+            "Java",
+            "Title"
+        ],
+        "total_tecnologias": 8,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://testfire.net": {
+        "tecnologias": [
+            "HttpOnly",
+            "HTTPServer",
+            "Cookies",
+            "Country",
+            "Apache",
+            "IP",
+            "Java",
+            "Title"
+        ],
+        "total_tecnologias": 8,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://demo.testfire.net": {
+        "tecnologias": [
+            "HttpOnly",
+            "HTTPServer",
+            "Cookies",
+            "Country",
+            "Apache",
+            "IP",
+            "Java",
+            "Title"
+        ],
+        "total_tecnologias": 8,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://www.testfire.net": {
+        "tecnologias": [
+            "HttpOnly",
+            "HTTPServer",
+            "Cookies",
+            "Country",
+            "Apache",
+            "IP",
+            "Java",
+            "Title"
+        ],
+        "total_tecnologias": 8,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    }
+}

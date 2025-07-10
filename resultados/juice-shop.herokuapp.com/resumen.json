@@ -1,0 +1,20 @@
+{
+    "http://juice-shop.herokuapp.com/": {
+        "tecnologias": [
+            "IP",
+            "X-Frame-Options",
+            "HTML5",
+            "Country",
+            "JQuery",
+            "Script",
+            "Title",
+            "Via-Proxy",
+            "UncommonHeaders",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 10,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    }
+}

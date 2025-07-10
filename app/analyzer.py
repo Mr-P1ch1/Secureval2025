@@ -1,4 +1,20 @@
-# app/analyzer.py (versión final ultra integrada con herramientas offline)
+# app/analyzer.py - SECUREVAL v1.0 FINAL
+# =====================================
+# MÓDULO DE ANÁLISIS DE SEGURIDAD
+# Versión final ultra integrada con herramientas offline
+# 
+# CARACTERÍSTICAS:
+# - Análisis de subdominios con AssetFinder
+# - Detección de tecnologías con WhatWeb  
+# - Escaneo de puertos con Nmap
+# - Verificación TLS/SSL
+# - Búsqueda de CVEs en base NIST NVD
+# - Metodología SECUREVAL para evaluación de riesgos
+# - Interfaz gráfica moderna con configuración avanzada
+# - Guardado estructurado por dominio
+# - Manejo robusto de errores y timeouts
+# - Logging detallado y estadísticas
+# =====================================
 import os
 import json
 import subprocess
@@ -152,6 +168,40 @@ def buscar_cves(tecnologia):
     return []
 
 def evaluar_riesgo_secureval(va, cvss):
+    """
+    METODOLOGÍA SECUREVAL - FÓRMULA DE EVALUACIÓN DE RIESGO
+    ========================================================
+    
+    Esta función implementa la metodología propietaria SECUREVAL para el cálculo
+    de riesgos de seguridad basada en tres componentes principales:
+    
+    FÓRMULA: Riesgo = Valor_Activo × Probabilidad × Vulnerabilidad
+    
+    COMPONENTES:
+    1. Valor_Activo (va): Importancia del activo para la organización (1-5)
+    2. Probabilidad (prob): Probabilidad de explotación basada en CVSS (1-5) 
+    3. Vulnerabilidad (vul): Nivel de vulnerabilidad basado en CVSS (1-5)
+    
+    ESCALAS DE CVSS A SECUREVAL:
+    • CVSS 9.0-10.0 → Nivel 5 (Crítico)
+    • CVSS 7.0-8.9  → Nivel 4 (Alto)
+    • CVSS 4.0-6.9  → Nivel 3 (Medio)
+    • CVSS 0.1-3.9  → Nivel 2 (Bajo)
+    • CVSS 0.0      → Nivel 1 (Mínimo)
+    
+    CLASIFICACIÓN DE RIESGO FINAL:
+    • 80-125: Crítico (Acción inmediata)
+    • 50-79:  Alto (Revisar urgente)
+    • 25-49:  Medio (Monitoreo continuo)
+    • 1-24:   Bajo (Buenas prácticas)
+    
+    Args:
+        va (float): Valor del activo (1.0-5.0)
+        cvss (float): Puntuación CVSS base (0.0-10.0)
+    
+    Returns:
+        tuple: (probabilidad, vulnerabilidad, riesgo_calculado)
+    """
     if cvss >= 9.0:
         prob = 5
         vul = 5

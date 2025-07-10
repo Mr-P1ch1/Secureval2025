@@ -1,0 +1,17 @@
+{
+    "dominio": "marfishecuador.com",
+    "total_resultados": 67,
+    "total_errores": 8,
+    "opciones_utilizadas": {
+        "subdominios": true,
+        "tecnologias": true,
+        "puertos": true,
+        "tls": true,
+        "cves": true
+    },
+    "estadisticas_puertos": {
+        "total_puertos_detectados": 15,
+        "hosts_con_puertos": 6,
+        "total_hosts_escaneados": 15
+    }
+}

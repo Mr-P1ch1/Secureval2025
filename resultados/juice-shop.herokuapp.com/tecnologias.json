@@ -1,0 +1,3 @@
+[
+{"target":"http://juice-shop.herokuapp.com/","http_status":200,"request_config":{"headers":{"User-Agent":"WhatWeb/0.5.5"}},"plugins":{"Country":{"string":["IRELAND"],"module":["IE"]},"HTML5":{},"HTTPServer":{"string":["Heroku"]},"IP":{"string":["46.137.15.86"]},"JQuery":{"version":["2.2.4"]},"Script":{"string":["module"]},"Title":{"string":["OWASP Juice Shop"]},"UncommonHeaders":{"string":["access-control-allow-origin,feature-policy,nel,report-to,reporting-endpoints,x-content-type-options,x-recruiting"]},"Via-Proxy":{"string":["1.1 heroku-router"]},"X-Frame-Options":{"string":["SAMEORIGIN"]}}}
+]

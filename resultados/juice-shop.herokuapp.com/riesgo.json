@@ -1,0 +1,260 @@
+[
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "Country",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": []
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "HTML5",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-2010-1664",
+            "CVE-2010-3019",
+            "CVE-2010-4046"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "HTTPServer",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-2007-1939",
+            "CVE-2017-7504",
+            "CVE-2018-12537"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "IP",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-1999-1306",
+            "CVE-1999-1466",
+            "CVE-1999-1216"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "JQuery",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-2007-2379",
+            "CVE-2011-4969",
+            "CVE-2013-4634"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "Script",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-1999-1392",
+            "CVE-1999-1119",
+            "CVE-1999-0045"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "Title",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-1999-0762",
+            "CVE-2001-1027",
+            "CVE-2001-0955"
+        ]
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "UncommonHeaders",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": []
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "Via-Proxy",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": []
+    },
+    {
+        "subdominio": "http://juice-shop.herokuapp.com/",
+        "tecnologia": "X-Frame-Options",
+        "tipo_servicio": "Otro",
+        "sistema_operativo": "Desconocido",
+        "puertos": [
+            "80/tcp open http",
+            "443/tcp open https",
+            "2000/tcp open cisco-sccp"
+        ],
+        "tls": {
+            "tls_version": "No disponible",
+            "cifrado": "-",
+            "valido_hasta": "-"
+        },
+        "cvss_max": 0.0,
+        "valor_activo": 2.0,
+        "probabilidad": 1,
+        "vulnerabilidad": 1,
+        "riesgo": 2.0,
+        "criticidad": "Bajo",
+        "cves": [
+            "CVE-2012-1961",
+            "CVE-2013-1696",
+            "CVE-2013-7234"
+        ]
+    }
+]

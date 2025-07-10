@@ -1,0 +1,68 @@
+{
+    "http://marfishecuador.com": {
+        "tecnologias": [
+            "IP",
+            "RedirectLocation",
+            "HTML5",
+            "Country",
+            "Title",
+            "UncommonHeaders",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 12,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://www.marfishecuador.com": {
+        "tecnologias": [
+            "IP",
+            "RedirectLocation",
+            "HTML5",
+            "Country",
+            "Title",
+            "UncommonHeaders",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 12,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "https://marfishecuador.com/": {
+        "tecnologias": [
+            "MetaGenerator",
+            "Email",
+            "IP",
+            "HTML5",
+            "PHP",
+            "Country",
+            "JQuery",
+            "Script",
+            "Title",
+            "X-Powered-By",
+            "UncommonHeaders",
+            "WordPress",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 13,
+        "total_cves": 28,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.23
+    },
+    "https://www.marfishecuador.com/": {
+        "tecnologias": [
+            "IP",
+            "RedirectLocation",
+            "PHP",
+            "Country",
+            "X-Powered-By",
+            "UncommonHeaders",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 10,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 4.29
+    }
+}

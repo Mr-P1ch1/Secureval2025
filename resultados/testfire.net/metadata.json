@@ -1,0 +1,17 @@
+{
+    "dominio": "testfire.net",
+    "total_resultados": 32,
+    "total_errores": 5,
+    "opciones_utilizadas": {
+        "subdominios": true,
+        "tecnologias": true,
+        "puertos": true,
+        "tls": true,
+        "cves": true
+    },
+    "estadisticas_puertos": {
+        "total_puertos_detectados": 13,
+        "hosts_con_puertos": 4,
+        "total_hosts_escaneados": 9
+    }
+}
