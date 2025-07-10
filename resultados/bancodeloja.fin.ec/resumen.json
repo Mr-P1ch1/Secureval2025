@@ -1,0 +1,351 @@
+{
+    "http://www.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://vpnbl.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "RedirectLocation",
+            "Strict-Transport-Security",
+            "Country"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 12,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://credibl.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://www2.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 9,
+        "total_cves": 24,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.78
+    },
+    "http://usuariodigital.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://biometria.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://blog.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "RedirectLocation",
+            "nginx",
+            "UncommonHeaders",
+            "Country",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 12,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://mioficinabl.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "http://inversionesbl.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Country",
+            "RedirectLocation"
+        ],
+        "total_tecnologias": 4,
+        "total_cves": 9,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "https://biometria.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "RedirectLocation",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "DotNetNuke"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 27,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.45
+    },
+    "https://inversionesbl.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 27,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.45
+    },
+    "http://autodiscover.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "X-Powered-By",
+            "IP",
+            "RedirectLocation",
+            "UncommonHeaders",
+            "Country",
+            "Microsoft-IIS",
+            "HTTPServer"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 7,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 4.29
+    },
+    "https://www.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "Frame",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-UA-Compatible",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Email",
+            "ASP_NET",
+            "Script",
+            "DotNetNuke"
+        ],
+        "total_tecnologias": 16,
+        "total_cves": 39,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.0
+    },
+    "https://credibl.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 30,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.45
+    },
+    "https://usuariodigital.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 30,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.45
+    },
+    "https://mioficinabl.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 30,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.45
+    },
+    "https://vpnbl.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "IP",
+            "Cookies",
+            "RedirectLocation",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 10,
+        "total_cves": 24,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.6
+    },
+    "https://www.bancodeloja.fin.ec": {
+        "tecnologias": [
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "Frame",
+            "UncommonHeaders",
+            "HTML5",
+            "X-XSS-Protection",
+            "Country",
+            "X-UA-Compatible",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Email",
+            "ASP_NET",
+            "Script",
+            "DotNetNuke"
+        ],
+        "total_tecnologias": 16,
+        "total_cves": 39,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.0
+    },
+    "https://outlook.office365.com/mail/?realm=bancodeloja.fin.ec&vd=autodiscover": {
+        "tecnologias": [
+            "Microsoft-HTTPAPI",
+            "Title",
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "HTML5",
+            "Country",
+            "X-UA-Compatible",
+            "HTTPServer",
+            "Script"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 21,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    },
+    "https://vpnbl.bancodeloja.fin.ec/global-protect/login.esp": {
+        "tecnologias": [
+            "IP",
+            "Cookies",
+            "Strict-Transport-Security",
+            "UncommonHeaders",
+            "X-XSS-Protection",
+            "Country",
+            "X-Frame-Options",
+            "HttpOnly",
+            "Script"
+        ],
+        "total_tecnologias": 9,
+        "total_cves": 24,
+        "riesgo_max": 18.0,
+        "riesgo_promedio": 3.78
+    },
+    "https://blog.bancodeloja.fin.ec/": {
+        "tecnologias": [
+            "JQuery",
+            "Title",
+            "IP",
+            "Strict-Transport-Security",
+            "nginx",
+            "UncommonHeaders",
+            "Country",
+            "X-Frame-Options",
+            "Email",
+            "Open-Graph-Protocol",
+            "HTTPServer",
+            "Script"
+        ],
+        "total_tecnologias": 12,
+        "total_cves": 27,
+        "riesgo_max": 2.0,
+        "riesgo_promedio": 2.0
+    }
+}

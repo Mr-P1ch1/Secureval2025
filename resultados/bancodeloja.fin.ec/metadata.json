@@ -1,0 +1,17 @@
+{
+    "dominio": "bancodeloja.fin.ec",
+    "total_resultados": 380,
+    "total_errores": 44,
+    "opciones_utilizadas": {
+        "subdominios": true,
+        "tecnologias": true,
+        "puertos": true,
+        "tls": true,
+        "cves": true
+    },
+    "estadisticas_puertos": {
+        "total_puertos_detectados": 86,
+        "hosts_con_puertos": 28,
+        "total_hosts_escaneados": 87
+    }
+}
