@@ -1,0 +1,21 @@
+# Dependencias del Sistema SECUREVAL
+# Para instalar: pip3 install -r requirements.txt
+
+# Dependencias principales (incluidas en Python estándar)
+# tkinter - GUI (incluido en Python)
+# json - Manejo JSON (incluido en Python)
+# os - Sistema operativo (incluido en Python)
+# sys - Sistema (incluido en Python)
+# threading - Hilos (incluido en Python)
+# datetime - Fechas y tiempo (incluido en Python)
+# time - Tiempo (incluido en Python)
+# socket - Conexiones de red (incluido en Python)
+# subprocess - Procesos externos (incluido en Python)
+
+# Dependencias externas opcionales
+requests>=2.25.0          # Para peticiones HTTP
+psutil>=5.8.0            # Para monitoreo del sistema (opcional)
+
+# Herramientas externas del sistema (instalar con apt/yum/brew)
+# nmap - Escaneo de puertos
+# whatweb - Detección de tecnologías web

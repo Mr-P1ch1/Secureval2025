@@ -1,12 +1,19 @@
-# app/tratamiento.py - Versión modernizada solo con análisis de texto v2.1
+# app/tratamiento.py - Versión modernizada con navegación interactiva v2.0
 import os
 import json
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+try:
+    from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
+    NAVIGATION_AVAILABLE = True
+except ImportError:
+    NAVIGATION_AVAILABLE = False
+import numpy as np
 
-# Usar ruta absoluta para resultados
-RESULTADOS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resultados")
+RESULTADOS_DIR = "resultados"
 
 # ============================
 # Lógica de tratamiento
@@ -28,44 +35,16 @@ def determinar_tratamiento(riesgo):
 def listar_dominios():
     """Retorna la lista de dominios escaneados con resultados."""
     if not os.path.exists(RESULTADOS_DIR):
-        print(f"Directorio de resultados no encontrado: {RESULTADOS_DIR}")
         return []
-    
-    try:
-        dominios = [d for d in os.listdir(RESULTADOS_DIR) 
-                   if os.path.isdir(os.path.join(RESULTADOS_DIR, d)) and 
-                   os.path.exists(os.path.join(RESULTADOS_DIR, d, "riesgo.json"))]
-        print(f"Dominios encontrados: {dominios}")
-        return dominios
-    except Exception as e:
-        print(f"Error listando dominios: {e}")
-        return []
+    return [d for d in os.listdir(RESULTADOS_DIR) if os.path.isdir(os.path.join(RESULTADOS_DIR, d))]
 
 def cargar_riesgos(dominio):
     """Carga los riesgos del análisis de un dominio."""
     ruta = os.path.join(RESULTADOS_DIR, dominio, "riesgo.json")
     if not os.path.exists(ruta):
-        print(f"Archivo no encontrado: {ruta}")
         return []
-    
-    try:
-        with open(ruta, "r", encoding='utf-8') as f:
-            datos = json.load(f)
-        
-        # Verificar que sea una lista
-        if not isinstance(datos, list):
-            print(f"Formato incorrecto en {ruta}: se esperaba una lista")
-            return []
-        
-        print(f"Cargados {len(datos)} riesgos del dominio {dominio}")
-        return datos
-    
-    except json.JSONDecodeError as e:
-        print(f"Error de JSON en {ruta}: {e}")
-        return []
-    except Exception as e:
-        print(f"Error cargando {ruta}: {e}")
-        return []
+    with open(ruta, "r") as f:
+        return json.load(f)
 
 # ============================
 # Interfaz gráfica
@@ -180,12 +159,24 @@ def lanzar_tratamiento_gui():
     btn_tratar.bind("<Enter>", on_enter_btn)
     btn_tratar.bind("<Leave>", on_leave_btn)
     
-    # Panel de resultados solo con área de texto
+    # Panel de resultados con pestañas como monitoreo para visualización completa
     resultados_frame = tk.Frame(inner_frame, bg='white')
     resultados_frame.pack(fill='both', expand=True)
     
-    # Área de texto directa sin pestañas
-    texto_frame = tk.Frame(resultados_frame, bg='#2c3e50', relief='solid', borderwidth=1)
+    # Crear notebook para pestañas igual que monitoreo
+    notebook = ttk.Notebook(resultados_frame)
+    notebook.pack(fill='both', expand=True, pady=(0, 20))
+    
+    # Pestaña de análisis de texto
+    tab_texto = ttk.Frame(notebook)
+    notebook.add(tab_texto, text="📄 Análisis Detallado")
+    
+    # Pestaña de gráficos (sin restricciones de ancho)
+    tab_graficos = ttk.Frame(notebook)
+    notebook.add(tab_graficos, text="📊 Dashboard Visual")
+    
+    # Área de texto en su pestaña
+    texto_frame = tk.Frame(tab_texto, bg='#2c3e50', relief='solid', borderwidth=1)
     texto_frame.pack(fill='both', expand=True, padx=10, pady=10)
     
     texto = tk.Text(texto_frame, 
@@ -202,6 +193,176 @@ def lanzar_tratamiento_gui():
     # Scrollbar para texto
     texto_scroll = ttk.Scrollbar(texto_frame, orient="vertical", command=texto.yview)
     texto.configure(yscrollcommand=texto_scroll.set)
+    
+    # Configurar matplotlib para mejor integración
+    plt.style.use('default')
+    
+    def crear_grafico_inicial():
+        """Crea un gráfico inicial vacío con navegación interactiva."""
+        # Limpiar cualquier gráfico anterior
+        for widget in tab_graficos.winfo_children():
+            widget.destroy()
+        
+        # Usar tamaño igual que monitoreo para visualización completa
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(16, 10), facecolor='#f8f9fa')
+        
+        # Márgenes igual que monitoreo sin recortes
+        fig.subplots_adjust(left=0.08, bottom=0.08, right=0.95, top=0.92, hspace=0.35)
+        
+        fig.suptitle('📊 Análisis de Riesgos - Dashboard Interactivo', fontsize=16, fontweight='bold', color='#2c3e50')
+        
+        # Gráfico de criticidad (placeholder)
+        criticidades = ['Bajo', 'Medio', 'Alto', 'Crítico']
+        valores = [0, 0, 0, 0]
+        colores = ['#2ecc71', '#f39c12', '#e67e22', '#e74c3c']
+        
+        wedges, texts, autotexts = ax1.pie(valores if sum(valores) > 0 else [1], 
+                                          labels=criticidades if sum(valores) > 0 else ['Sin datos'],
+                                          colors=colores if sum(valores) > 0 else ['#bdc3c7'],
+                                          autopct='%1.1f%%' if sum(valores) > 0 else '',
+                                          startangle=90, textprops={'fontsize': 11, 'fontweight': 'bold'})
+        ax1.set_title('🎯 Distribución por Criticidad', fontweight='bold', fontsize=14, color='#2c3e50', pad=20)
+        
+        # Gráfico de riesgos por tecnología (placeholder)
+        bars = ax2.bar(['Sin datos'], [1], color='#bdc3c7', edgecolor='#34495e', linewidth=1.5)
+        ax2.set_title('🔧 Riesgos por Tecnología', fontweight='bold', fontsize=14, color='#2c3e50', pad=20)
+        ax2.set_ylabel('Nivel de Riesgo', fontsize=12, fontweight='bold', color='#2c3e50')
+        ax2.tick_params(axis='x', labelsize=10)
+        ax2.tick_params(axis='y', labelsize=10)
+        ax2.grid(True, alpha=0.3, linestyle='--')
+        ax2.set_facecolor('#fcfcfc')
+        
+        return fig
+    
+    def integrar_canvas_con_navegacion(fig):
+        """Integra el canvas con navegación interactiva completa igual que monitoreo."""
+        # Limpiar contenido previo
+        for widget in tab_graficos.winfo_children():
+            widget.destroy()
+        
+        # Crear canvas de matplotlib usando todo el ancho disponible
+        canvas_grafico = FigureCanvasTkAgg(fig, tab_graficos)
+        canvas_grafico.draw()
+        canvas_widget = canvas_grafico.get_tk_widget()
+        
+        # Canvas que usa todo el espacio disponible sin restricciones
+        canvas_widget.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        # Frame para navegación interactiva
+        nav_frame = tk.Frame(tab_graficos, bg='#f8f9fa', height=35)
+        nav_frame.pack(fill='x', pady=(0, 5))
+        nav_frame.pack_propagate(False)
+        
+        # Barra de navegación interactiva igual que monitoreo
+        if NAVIGATION_AVAILABLE:
+            try:
+                toolbar = NavigationToolbar2Tk(canvas_grafico, nav_frame)
+                toolbar.update()
+                toolbar.config(bg='#f8f9fa', relief='flat')
+                
+                # Etiqueta informativa moderna
+                info_label = tk.Label(nav_frame, 
+                                    text="🔍 Use los botones para navegar y hacer zoom en los gráficos",
+                                    font=("Helvetica", 9),
+                                    bg='#f8f9fa', fg='#34495e')
+                info_label.pack(side='bottom', pady=2)
+            except Exception as e:
+                print(f"Error creando toolbar: {e}")
+                # Mensaje alternativo si falla la toolbar
+                tk.Label(nav_frame, 
+                        text="📊 Dashboard Interactivo de Tratamiento de Riesgos",
+                        font=("Helvetica", 10, "bold"),
+                        bg='#f8f9fa', fg='#2c3e50').pack(pady=5)
+        else:
+            tk.Label(nav_frame, 
+                    text="📊 Dashboard de Tratamiento de Riesgos",
+                    font=("Helvetica", 10, "bold"),
+                    bg='#f8f9fa', fg='#2c3e50').pack(pady=5)
+        
+        return canvas_grafico
+    
+    fig = crear_grafico_inicial()
+    canvas_grafico = integrar_canvas_con_navegacion(fig)
+    
+    def actualizar_graficos(datos):
+        """Actualiza los gráficos con datos reales y navegación mejorada."""
+        # Limpiar figura anterior
+        fig.clear()
+        
+        # Configurar subplots con espaciado óptimo para visualización completa
+        fig.subplots_adjust(left=0.08, bottom=0.08, right=0.95, top=0.92, hspace=0.35)
+        
+        # Crear subplots
+        ax1 = fig.add_subplot(2, 1, 1)
+        ax2 = fig.add_subplot(2, 1, 2)
+        
+        # Título principal mejorado
+        fig.suptitle('📊 Dashboard de Tratamiento de Riesgos', fontsize=16, fontweight='bold', color='#2c3e50')
+        
+        # Datos para gráfico de criticidad
+        criticidades_count = {'Bajo': 0, 'Medio': 0, 'Alto': 0, 'Crítico': 0}
+        tecnologias_riesgo = {}
+        
+        for item in datos:
+            criticidad = item.get('criticidad', 'Bajo')
+            if criticidad in criticidades_count:
+                criticidades_count[criticidad] += 1
+            
+            tecnologia = item.get('tecnologia', 'Desconocido')
+            riesgo = item.get('riesgo', 0)
+            if tecnologia not in tecnologias_riesgo:
+                tecnologias_riesgo[tecnologia] = []
+            tecnologias_riesgo[tecnologia].append(riesgo)
+        
+        # Gráfico de criticidad con diseño profesional mejorado
+        labels = list(criticidades_count.keys())
+        sizes = list(criticidades_count.values())
+        colores = ['#2ecc71', '#f39c12', '#e67e22', '#e74c3c']  # Colores modernos consistentes
+        
+        if sum(sizes) > 0:
+            wedges, texts, autotexts = ax1.pie(sizes, labels=labels, colors=colores, 
+                                              autopct='%1.1f%%', startangle=90,
+                                              textprops={'fontsize': 11, 'fontweight': 'bold'},
+                                              explode=(0.05, 0.05, 0.05, 0.05))  # Separación para mejor vista
+        else:
+            ax1.pie([1], labels=['Sin datos'], colors=['#bdc3c7'], 
+                   textprops={'fontsize': 11, 'fontweight': 'bold'})
+        
+        ax1.set_title('🎯 Distribución por Criticidad', fontweight='bold', fontsize=14, color='#2c3e50', pad=20)
+        
+        # Gráfico de riesgos por tecnología (top 5) con diseño profesional mejorado
+        if tecnologias_riesgo:
+            tech_promedio = {tech: np.mean(riesgos) for tech, riesgos in tecnologias_riesgo.items()}
+            top_tech = sorted(tech_promedio.items(), key=lambda x: x[1], reverse=True)[:5]
+            
+            tecnologias = [tech[:20] + '...' if len(tech) > 20 else tech for tech, _ in top_tech]
+            riesgos = [riesgo for _, riesgo in top_tech]
+            
+            # Colores dinámicos según nivel de riesgo
+            colores_bar = ['#e74c3c' if r >= 70 else '#e67e22' if r >= 50 else '#f39c12' if r >= 25 else '#2ecc71' for r in riesgos]
+            
+            bars = ax2.bar(tecnologias, riesgos, color=colores_bar, edgecolor='#34495e', linewidth=1.5, alpha=0.8)
+            ax2.set_title('🔧 Top 5 Tecnologías por Riesgo', fontweight='bold', fontsize=14, color='#2c3e50', pad=20)
+            ax2.set_ylabel('Riesgo Promedio', fontsize=12, fontweight='bold', color='#2c3e50')
+            ax2.tick_params(axis='x', labelsize=10, rotation=45)
+            ax2.tick_params(axis='y', labelsize=10)
+            ax2.grid(True, alpha=0.3, linestyle='--')
+            ax2.set_facecolor('#fcfcfc')
+            
+            # Añadir valores en las barras con mejor formato
+            for bar, valor in zip(bars, riesgos):
+                ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(riesgos)*0.02,
+                        f'{valor:.1f}', ha='center', va='bottom', fontweight='bold', fontsize=10, color='#2c3e50')
+        else:
+            bars = ax2.bar(['Sin datos'], [1], color='#bdc3c7', edgecolor='#34495e', linewidth=1.5)
+            ax2.set_title('🔧 Riesgos por Tecnología', fontweight='bold', fontsize=14, color='#2c3e50', pad=20)
+            ax2.tick_params(axis='x', labelsize=10)
+            ax2.tick_params(axis='y', labelsize=10)
+            ax2.grid(True, alpha=0.3, linestyle='--')
+            ax2.set_facecolor('#fcfcfc')
+        
+        # Redibujar canvas
+        canvas_grafico.draw()
     
     # Mensaje inicial en el área de texto
     texto.insert(tk.END, "🎯 MÓDULO DE TRATAMIENTO DE RIESGOS\n")
@@ -220,87 +381,38 @@ def lanzar_tratamiento_gui():
         if not dominio:
             return
         
-        try:
-            datos = cargar_riesgos(dominio)
-            if not datos:
-                texto.delete(1.0, tk.END)
-                texto.insert(tk.END, f"❌ ERROR: No se pudieron cargar los datos del dominio '{dominio}'\n")
-                texto.insert(tk.END, "=" * 50 + "\n\n")
-                texto.insert(tk.END, "🔍 Posibles causas:\n")
-                texto.insert(tk.END, "• El archivo riesgo.json no existe\n")
-                texto.insert(tk.END, "• El archivo está corrupto o vacío\n")
-                texto.insert(tk.END, "• No hay permisos de lectura\n\n")
-                texto.insert(tk.END, "💡 Verifique que el análisis se haya completado correctamente.\n")
-                messagebox.showwarning("Aviso", f"No hay resultados para el dominio '{dominio}'.")
-                return
-            
-            # Crear opciones para el combobox con información más clara
-            valores = []
-            for i, r in enumerate(datos):
-                subdominio = r.get('subdominio', 'Desconocido')
-                tecnologia = r.get('tecnologia', 'Desconocida')
-                riesgo = r.get('riesgo', 0)
-                criticidad = r.get('criticidad', 'Bajo')
-                
-                # Truncar subdominio si es muy largo
-                if len(subdominio) > 40:
-                    subdominio = subdominio[:37] + "..."
-                
-                valores.append(f"{i+1:03d} | {criticidad} | {subdominio} | {tecnologia} | Riesgo: {riesgo:.1f}")
-            
-            combo_riesgos['values'] = valores
-            combo_riesgos.set("")
-            
-            # Actualizar área de texto con información detallada
-            texto.delete(1.0, tk.END)
-            texto.insert(tk.END, f"📊 RESUMEN DEL DOMINIO: {dominio}\n")
-            texto.insert(tk.END, "=" * 50 + "\n\n")
-            texto.insert(tk.END, f"🔍 Total de riesgos detectados: {len(datos)}\n")
-            
-            # Estadísticas por criticidad
-            criticidades = {}
-            for item in datos:
-                crit = item.get('criticidad', 'Bajo')
-                criticidades[crit] = criticidades.get(crit, 0) + 1
-            
-            texto.insert(tk.END, "\n📈 Distribución por criticidad:\n")
-            for crit in ['Bajo', 'Medio', 'Alto', 'Crítico']:
-                count = criticidades.get(crit, 0)
-                if count > 0:
-                    emoji = {"Bajo": "🟢", "Medio": "🟡", "Alto": "🟠", "Crítico": "🔴"}.get(crit, "⚪")
-                    porcentaje = (count / len(datos)) * 100
-                    texto.insert(tk.END, f"   {emoji} {crit}: {count} ({porcentaje:.1f}%)\n")
-            
-            riesgo_promedio = sum(item.get('riesgo', 0) for item in datos) / len(datos)
-            texto.insert(tk.END, f"\n⚖️ Riesgo promedio del dominio: {riesgo_promedio:.2f}\n")
-            
-            # Mostrar tecnologías más riesgosas
-            tech_riesgo = {}
-            for item in datos:
-                tech = item.get('tecnologia', 'Desconocida')
-                riesgo = item.get('riesgo', 0)
-                if tech not in tech_riesgo:
-                    tech_riesgo[tech] = []
-                tech_riesgo[tech].append(riesgo)
-            
-            tech_promedio = {tech: sum(riesgos)/len(riesgos) for tech, riesgos in tech_riesgo.items()}
-            top_tech = sorted(tech_promedio.items(), key=lambda x: x[1], reverse=True)[:3]
-            
-            if top_tech:
-                texto.insert(tk.END, "\n🔥 Top 3 tecnologías más riesgosas:\n")
-                for i, (tech, riesgo_prom) in enumerate(top_tech, 1):
-                    tech_display = tech[:30] + "..." if len(tech) > 30 else tech
-                    texto.insert(tk.END, f"   {i}. {tech_display}: {riesgo_prom:.2f}\n")
-            
-            texto.insert(tk.END, "\n🎯 Seleccione un riesgo específico para análisis detallado.\n")
-            
-        except Exception as e:
-            print(f"Error en actualizar_riesgos_local: {e}")
-            texto.delete(1.0, tk.END)
-            texto.insert(tk.END, f"❌ ERROR CRÍTICO: {str(e)}\n")
-            texto.insert(tk.END, "=" * 50 + "\n\n")
-            texto.insert(tk.END, "🔧 Por favor, contacte al administrador del sistema.\n")
-            messagebox.showerror("Error", f"Error crítico al cargar los datos: {str(e)}")
+        datos = cargar_riesgos(dominio)
+        if not datos:
+            messagebox.showwarning("Aviso", f"No hay resultados para el dominio '{dominio}'.")
+            return
+        
+        valores = [f"{r['subdominio']} | {r['tecnologia']} | Riesgo: {r['riesgo']}" for r in datos]
+        combo_riesgos['values'] = valores
+        combo_riesgos.set("")
+        
+        # Actualizar gráficos con todos los datos del dominio
+        actualizar_graficos(datos)
+        
+        # Actualizar área de texto
+        texto.delete(1.0, tk.END)
+        texto.insert(tk.END, f"📊 RESUMEN DEL DOMINIO: {dominio}\n")
+        texto.insert(tk.END, "=" * 50 + "\n\n")
+        texto.insert(tk.END, f"🔍 Total de riesgos detectados: {len(datos)}\n")
+        
+        # Estadísticas por criticidad
+        criticidades = {}
+        for item in datos:
+            crit = item.get('criticidad', 'Bajo')
+            criticidades[crit] = criticidades.get(crit, 0) + 1
+        
+        texto.insert(tk.END, "\n📈 Distribución por criticidad:\n")
+        for crit, count in sorted(criticidades.items()):
+            emoji = {"Bajo": "🟢", "Medio": "🟡", "Alto": "🟠", "Crítico": "🔴"}.get(crit, "⚪")
+            texto.insert(tk.END, f"   {emoji} {crit}: {count}\n")
+        
+        riesgo_promedio = sum(item.get('riesgo', 0) for item in datos) / len(datos)
+        texto.insert(tk.END, f"\n⚖️ Riesgo promedio: {riesgo_promedio:.2f}\n")
+        texto.insert(tk.END, "\n🎯 Seleccione un riesgo específico para análisis detallado.\n")
 
     def analizar_tratamiento_local():
         """Evalúa el tratamiento recomendado según el riesgo del ítem seleccionado."""
@@ -347,15 +459,7 @@ def lanzar_tratamiento_gui():
         # Evaluación de riesgo
         texto.insert(tk.END, f"\n⚠️ EVALUACIÓN DE RIESGO:\n")
         texto.insert(tk.END, f"📊 CVSS Máximo: {item.get('cvss_max', 0)}\n")
-        
-        # Manejar TLS como string o dict
-        tls_info = item.get('tls', 'N/A')
-        if isinstance(tls_info, dict):
-            tls_version = tls_info.get('tls_version', 'N/A')
-        else:
-            tls_version = str(tls_info)
-        texto.insert(tk.END, f"🔒 TLS/SSL: {tls_version}\n")
-        
+        texto.insert(tk.END, f"🔒 TLS/SSL: {item.get('tls', {}).get('tls_version', 'N/A')}\n")
         texto.insert(tk.END, f"🎯 Nivel de riesgo: {riesgo}\n")
         texto.insert(tk.END, f"{emoji_crit} Criticidad: {criticidad}\n")
         

@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "nombre": "Servidor",
+        "tipo": "Primario",
+        "descripcion": "Pagina Web",
+        "estado": "En uso",
+        "area": "Desarrollo",
+        "procesos": "Teconologia",
+        "propietario": "Juan",
+        "confidencialidad": 4,
+        "integridad": 5,
+        "disponibilidad": 1,
+        "valor": 3.33,
+        "impacto_cia": "C:4 I:5 D:1"
+    }
+]

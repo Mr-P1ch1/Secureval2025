@@ -14,11 +14,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-try:
-    from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
-    NAVIGATION_AVAILABLE = True
-except ImportError:
-    NAVIGATION_AVAILABLE = False
 import numpy as np
 
 # Configurar el path para importar módulos
@@ -33,76 +28,17 @@ except ImportError:
         """Función de respaldo si no se puede importar el módulo"""
         return []
 
-def leer_json_seguro(archivo_path):
-    """Lee un archivo JSON de forma segura, manejando errores de formato"""
-    try:
-        with open(archivo_path, 'r', encoding='utf-8') as f:
-            contenido = f.read().strip()
-        
-        # Intentar parsear JSON directamente
-        try:
-            return json.loads(contenido)
-        except json.JSONDecodeError as e:
-            print(f"Error parseando JSON {archivo_path}: {e}")
-            
-            # Intentar reparar JSON común: múltiples objetos concatenados
-            if "Extra data" in str(e):
-                # Buscar el primer objeto JSON válido
-                brace_count = 0
-                for i, char in enumerate(contenido):
-                    if char == '{':
-                        brace_count += 1
-                    elif char == '}':
-                        brace_count -= 1
-                        if brace_count == 0:
-                            # Encontramos el final del primer objeto JSON
-                            json_valido = contenido[:i+1]
-                            try:
-                                return json.loads(json_valido)
-                            except:
-                                continue
-            
-            # Intentar reparar JSON con comas faltantes
-            elif "delimiter" in str(e):
-                # Buscar patrones comunes de JSON mal formateado
-                lineas = contenido.split('\n')
-                contenido_reparado = []
-                
-                for i, linea in enumerate(lineas):
-                    contenido_reparado.append(linea)
-                    # Si la línea termina con } y la siguiente empieza con ", agregar coma
-                    if (i < len(lineas) - 1 and 
-                        linea.strip().endswith('}') and 
-                        lineas[i+1].strip().startswith('"') and
-                        not linea.strip().endswith(',}')):
-                        contenido_reparado[-1] = linea.rstrip() + ','
-                
-                try:
-                    return json.loads('\n'.join(contenido_reparado))
-                except:
-                    pass
-            
-            print(f"No se pudo reparar automáticamente el JSON en {archivo_path}")
-            return {}
-            
-    except Exception as e:
-        print(f"Error leyendo archivo {archivo_path}: {e}")
-        return {}
-
 def listar_dominios():
     """Lista los dominios que tienen resultados de análisis"""
     try:
-        # Buscar en el directorio resultados del nivel padre
-        resultados_dir = current_dir.parent / "resultados"
+        resultados_dir = current_dir / "resultados"
         if not resultados_dir.exists():
-            print(f"Directorio de resultados no encontrado: {resultados_dir}")
             return []
         
         dominios = []
         for item in resultados_dir.iterdir():
             if item.is_dir() and (item / "resumen.json").exists():
                 dominios.append(item.name)
-                print(f"Dominio encontrado: {item.name}")
         
         return sorted(dominios)
     except Exception as e:
@@ -112,11 +48,9 @@ def listar_dominios():
 def calcular_kpis(dominio):
     """Calcula indicadores clave de rendimiento para un dominio"""
     try:
-        # Buscar en el directorio resultados del nivel padre
-        resultados_dir = current_dir.parent / "resultados" / dominio
+        resultados_dir = current_dir / "resultados" / dominio
         
         if not resultados_dir.exists():
-            print(f"Directorio del dominio no encontrado: {resultados_dir}")
             return None
         
         kpis = {
@@ -131,10 +65,8 @@ def calcular_kpis(dominio):
         # Leer resumen si existe
         resumen_file = resultados_dir / "resumen.json"
         if resumen_file.exists():
-            resumen = leer_json_seguro(resumen_file)
-            if not resumen:
-                print(f"No se pudo leer el archivo de resumen para {dominio}")
-                return None
+            with open(resumen_file, 'r') as f:
+                resumen = json.load(f)
             
             kpis['total_subdominios'] = len(resumen)
             
@@ -155,20 +87,12 @@ def calcular_kpis(dominio):
         # Leer tecnologías si existe
         tecnologias_file = resultados_dir / "tecnologias.json"
         if tecnologias_file.exists():
-            tecnologias = leer_json_seguro(tecnologias_file)
+            with open(tecnologias_file, 'r') as f:
+                tecnologias = json.load(f)
             
-            # Verificar que tecnologias sea un diccionario
-            if isinstance(tecnologias, dict):
-                for tech_data in tecnologias.values():
-                    if isinstance(tech_data, dict) and tech_data.get('cves'):
-                        kpis['tecnologias_vulnerables'] += 1
-            elif isinstance(tecnologias, list):
-                # Si es una lista, iterar sobre los elementos
-                for tech_data in tecnologias:
-                    if isinstance(tech_data, dict) and tech_data.get('cves'):
-                        kpis['tecnologias_vulnerables'] += 1
-            else:
-                print(f"Formato inesperado en tecnologias.json para {dominio}: {type(tecnologias)}")
+            for tech_data in tecnologias.values():
+                if isinstance(tech_data, dict) and tech_data.get('cves'):
+                    kpis['tecnologias_vulnerables'] += 1
         
         return kpis
         
@@ -213,29 +137,26 @@ def mostrar_kpis_en_gui(kpis, texto_widget):
 def mostrar_resumen(dominio, texto_widget):
     """Muestra un resumen detallado del análisis"""
     try:
-        # Buscar en el directorio resultados del nivel padre
-        resultados_dir = current_dir.parent / "resultados" / dominio
+        resultados_dir = current_dir / "resultados" / dominio
         resumen_file = resultados_dir / "resumen.json"
         
         if resumen_file.exists():
-            resumen = leer_json_seguro(resumen_file)
+            with open(resumen_file, 'r') as f:
+                resumen = json.load(f)
             
-            if resumen:
-                texto_widget.insert(tk.END, "📋 RESUMEN DETALLADO POR SUBDOMINIO\n")
-                texto_widget.insert(tk.END, "=" * 60 + "\n\n")
-                
-                # Mostrar solo los primeros 5 subdominios para no saturar
-                for i, (subdominio, info) in enumerate(list(resumen.items())[:5], 1):
-                    texto_widget.insert(tk.END, f"{i}. 🔹 {subdominio}\n")
-                    texto_widget.insert(tk.END, f"   • Tecnologías: {info.get('total_tecnologias', 0)}\n")
-                    texto_widget.insert(tk.END, f"   • CVEs: {info.get('total_cves', 0)}\n")
-                    texto_widget.insert(tk.END, f"   • Riesgo máximo: {info.get('riesgo_max', 0):.2f}/10\n")
-                    texto_widget.insert(tk.END, f"   • Riesgo promedio: {info.get('riesgo_promedio', 0):.2f}/10\n\n")
-                
-                if len(resumen) > 5:
-                    texto_widget.insert(tk.END, f"... y {len(resumen) - 5} subdominios más\n\n")
-            else:
-                texto_widget.insert(tk.END, "❌ Error: No se pudo leer el archivo de resumen\n")
+            texto_widget.insert(tk.END, "📋 RESUMEN DETALLADO POR SUBDOMINIO\n")
+            texto_widget.insert(tk.END, "=" * 60 + "\n\n")
+            
+            # Mostrar solo los primeros 5 subdominios para no saturar
+            for i, (subdominio, info) in enumerate(list(resumen.items())[:5], 1):
+                texto_widget.insert(tk.END, f"{i}. 🔹 {subdominio}\n")
+                texto_widget.insert(tk.END, f"   • Tecnologías: {info.get('total_tecnologias', 0)}\n")
+                texto_widget.insert(tk.END, f"   • CVEs: {info.get('total_cves', 0)}\n")
+                texto_widget.insert(tk.END, f"   • Riesgo máximo: {info.get('riesgo_max', 0):.2f}/10\n")
+                texto_widget.insert(tk.END, f"   • Riesgo promedio: {info.get('riesgo_promedio', 0):.2f}/10\n\n")
+            
+            if len(resumen) > 5:
+                texto_widget.insert(tk.END, f"... y {len(resumen) - 5} subdominios más\n\n")
         
     except Exception as e:
         texto_widget.insert(tk.END, f"❌ Error cargando resumen: {str(e)}\n")
@@ -285,19 +206,10 @@ def mostrar_activos(texto_widget):
         texto_widget.insert(tk.END, f"❌ Error cargando activos: {str(e)}\n")
 
 def crear_grafico_kpis(kpis_data, frame_parent):
-    """Crea un gráfico de KPIs usando matplotlib con visualización completa e interactiva"""
+    """Crea un gráfico de KPIs usando matplotlib"""
     try:
-        # Limpiar cualquier gráfico anterior
-        for widget in frame_parent.winfo_children():
-            widget.destroy()
-        
-        # Usar un tamaño más manejable pero que se vea completo
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 10))
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 8))
         fig.patch.set_facecolor('#f8f9fa')
-        
-        # Ajustar márgenes para que se vea todo el contenido
-        plt.subplots_adjust(left=0.08, bottom=0.08, right=0.95, top=0.92, 
-                           hspace=0.35, wspace=0.25)
         
         # Gráfico 1: Distribución de riesgos
         riesgos = ['Bajo (0-4)', 'Medio (4-6)', 'Alto (6-8)', 'Crítico (8-10)']
@@ -327,10 +239,8 @@ def crear_grafico_kpis(kpis_data, frame_parent):
             valores_riesgo[3] = 40
         
         colors = ['#2ecc71', '#f39c12', '#e67e22', '#e74c3c']
-        wedges, texts, autotexts = ax1.pie(valores_riesgo, labels=riesgos, colors=colors, 
-                                          autopct='%1.1f%%', startangle=90,
-                                          textprops={'fontsize': 10})
-        ax1.set_title('Distribución de Niveles de Riesgo', fontweight='bold', fontsize=12)
+        ax1.pie(valores_riesgo, labels=riesgos, colors=colors, autopct='%1.1f%%', startangle=90)
+        ax1.set_title('Distribución de Niveles de Riesgo', fontweight='bold')
         
         # Gráfico 2: Métricas principales
         metricas = ['Subdominios', 'Tecnologías', 'CVEs', 'Vulnerabilidades']
@@ -342,15 +252,13 @@ def crear_grafico_kpis(kpis_data, frame_parent):
         ]
         
         bars = ax2.bar(metricas, valores_metricas, color=['#3498db', '#9b59b6', '#e74c3c', '#f39c12'])
-        ax2.set_title('Métricas de Seguridad', fontweight='bold', fontsize=12)
-        ax2.set_ylabel('Cantidad', fontsize=10)
-        ax2.tick_params(axis='x', labelsize=9)
-        ax2.tick_params(axis='y', labelsize=9)
+        ax2.set_title('Métricas de Seguridad', fontweight='bold')
+        ax2.set_ylabel('Cantidad')
         
         # Añadir valores en las barras
         for bar, valor in zip(bars, valores_metricas):
-            ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(valores_metricas)*0.02,
-                    str(valor), ha='center', va='bottom', fontweight='bold', fontsize=9)
+            ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                    str(valor), ha='center', va='bottom', fontweight='bold')
         
         # Gráfico 3: Indicador de riesgo
         riesgo = kpis_data.get('riesgo_promedio', 0)
@@ -361,8 +269,8 @@ def crear_grafico_kpis(kpis_data, frame_parent):
                         wedgeprops=dict(width=0.3))
         
         ax3.text(0, 0, f'{riesgo:.1f}', ha='center', va='center', 
-                fontsize=16, fontweight='bold')
-        ax3.set_title('Riesgo Promedio General', fontweight='bold', fontsize=12)
+                fontsize=20, fontweight='bold')
+        ax3.set_title('Riesgo Promedio General', fontweight='bold')
         
         # Gráfico 4: Comparativa de seguridad
         categorias = ['Tecnologías\nSeguras', 'Tecnologías\nVulnerables']
@@ -373,57 +281,21 @@ def crear_grafico_kpis(kpis_data, frame_parent):
         colors_comp = ['#2ecc71', '#e74c3c']
         
         bars2 = ax4.bar(categorias, valores_comp, color=colors_comp)
-        ax4.set_title('Estado de Tecnologías', fontweight='bold', fontsize=12)
-        ax4.set_ylabel('Cantidad', fontsize=10)
-        ax4.tick_params(axis='x', labelsize=9)
-        ax4.tick_params(axis='y', labelsize=9)
+        ax4.set_title('Estado de Tecnologías', fontweight='bold')
+        ax4.set_ylabel('Cantidad')
         
         # Añadir valores en las barras
         for bar, valor in zip(bars2, valores_comp):
-            ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(valores_comp)*0.02,
-                    str(valor), ha='center', va='bottom', fontweight='bold', fontsize=9)
+            ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                    str(valor), ha='center', va='bottom', fontweight='bold')
         
-        # No usar tight_layout para evitar recortes
-        # plt.tight_layout()
-        # plt.subplots_adjust(hspace=0.3, wspace=0.3)
+        plt.tight_layout()
+        plt.subplots_adjust(hspace=0.3, wspace=0.3)
         
-        # Widget del canvas que se ajuste automáticamente
+        # Integrar el gráfico en tkinter
         canvas = FigureCanvasTkAgg(fig, frame_parent)
         canvas.draw()
-        canvas_widget = canvas.get_tk_widget()
-        
-        # Configurar el canvas para que se ajuste al contenido
-        canvas_widget.pack(fill='both', expand=True, padx=10, pady=10)
-        
-        # Frame para información de navegación (más simple)
-        info_frame = tk.Frame(frame_parent, bg='#f8f9fa', height=30)
-        info_frame.pack(fill='x', pady=(0, 5))
-        info_frame.pack_propagate(False)
-        
-        # Crear barra de navegación si está disponible
-        if NAVIGATION_AVAILABLE:
-            try:
-                toolbar = NavigationToolbar2Tk(canvas, info_frame)
-                toolbar.update()
-                toolbar.config(bg='#f8f9fa', relief='flat')
-                
-                # Etiqueta informativa
-                info_label = tk.Label(info_frame, 
-                                    text="� Use los botones para navegar y hacer zoom en los gráficos",
-                                    font=("Helvetica", 9),
-                                    bg='#f8f9fa', fg='#34495e')
-                info_label.pack(side='bottom', pady=2)
-            except:
-                # Si hay error con la toolbar, mostrar mensaje simple
-                tk.Label(info_frame, 
-                        text="📊 Gráficos de KPIs - Dashboard Interactivo",
-                        font=("Helvetica", 10, "bold"),
-                        bg='#f8f9fa', fg='#2c3e50').pack(pady=5)
-        else:
-            tk.Label(info_frame, 
-                    text="📊 Gráficos de KPIs - Dashboard Interactivo",
-                    font=("Helvetica", 10, "bold"),
-                    bg='#f8f9fa', fg='#2c3e50').pack(pady=5)
+        canvas.get_tk_widget().pack(fill='both', expand=True)
         
         return canvas
         
@@ -434,28 +306,10 @@ def crear_grafico_kpis(kpis_data, frame_parent):
 def mostrar_monitoreo():
     """Función principal que muestra la interfaz de monitoreo moderna"""
     
-    # Crear ventana principal con tamaño completo
+    # Crear ventana principal
     ventana = tk.Toplevel()
     ventana.title("SECUREVAL - Dashboard de Monitoreo v2.0")
     ventana.configure(bg='#f8f9fa')
-    
-    # Configurar ventana para usar todo el espacio disponible
-    try:
-        ventana.state('zoomed')  # Maximizar ventana en Windows/Linux
-    except tk.TclError:
-        # Alternativa para sistemas que no soportan 'zoomed'
-        ventana.attributes('-zoomed', True)
-    except:
-        # Usar tamaño amplio por defecto
-        ventana.geometry('1600x900')
-        
-    # Centrar ventana si no se puede maximizar
-    ventana.update_idletasks()
-    width = ventana.winfo_width()
-    height = ventana.winfo_height()
-    x = (ventana.winfo_screenwidth() // 2) - (width // 2)
-    y = (ventana.winfo_screenheight() // 2) - (height // 2)
-    ventana.geometry(f'{width}x{height}+{x}+{y}')
     
     # Crear canvas y scrollbar para scroll
     canvas = tk.Canvas(ventana, bg='#f8f9fa')
@@ -470,8 +324,8 @@ def mostrar_monitoreo():
     canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
     canvas.configure(yscrollcommand=scrollbar.set)
     
-    # Frame principal dentro del canvas con padding mínimo
-    main_frame = tk.Frame(scrollable_frame, bg='#f8f9fa', padx=5, pady=5)
+    # Frame principal dentro del canvas
+    main_frame = tk.Frame(scrollable_frame, bg='#f8f9fa', padx=20, pady=20)
     main_frame.pack(fill='both', expand=True)
     
     # Header con título y descripción
@@ -485,7 +339,7 @@ def mostrar_monitoreo():
     
     subtitle_label = tk.Label(header_frame, text="Monitoreo de Seguridad y Gestión de Activos",
                              font=("Helvetica", 12),
-                             bg='#2c3e50', fg='#bdc3c7', pady=15)
+                             bg='#2c3e50', fg='#bdc3c7', pady=(0, 15))
     subtitle_label.pack()
     
     # === PANTALLA DE BIENVENIDA ===
@@ -536,9 +390,6 @@ Este módulo le permite:
     
     # === FRAME DEL DASHBOARD (Inicialmente oculto) ===
     dashboard_frame = tk.Frame(main_frame, bg='#f8f9fa')
-    
-    # Botones del dashboard (definir antes de mostrar_dashboard)
-    dashboard_btn_container = tk.Frame(main_frame, bg='#f8f9fa')
     
     def mostrar_dashboard():
         """Cambia a la vista del dashboard"""
@@ -668,7 +519,8 @@ Este módulo le permite:
         # Focus inicial
         combo_modo.focus_set()
         
-        # Configurar botones del dashboard
+        # Botones del dashboard
+        dashboard_btn_container = tk.Frame(main_frame, bg='#f8f9fa')
         
         # Botón Generar Reporte
         analizar_btn = tk.Button(dashboard_btn_container, text="📊 Generar Reporte", 

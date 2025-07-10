@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "codigo": "A-001",
+        "nombre": "Servidor",
+        "tipo": "Primario",
+        "descripcion": "Linux Ubuntu Server",
+        "estado": "En uso",
+        "area": "Desarrollo",
+        "procesos": "Automatizacion",
+        "propietario": "Juan",
+        "confidencialidad": 4,
+        "integridad": 5,
+        "disponibilidad": 5,
+        "valor": 4.67,
+        "impacto_empresa": "C:4 I:5 D:5"
+    }
+]

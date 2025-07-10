@@ -1,0 +1,17 @@
+{
+    "dominio": "vulqanopark.com",
+    "total_resultados": 290,
+    "total_errores": 45,
+    "opciones_utilizadas": {
+        "subdominios": true,
+        "tecnologias": true,
+        "puertos": true,
+        "tls": true,
+        "cves": true
+    },
+    "estadisticas_puertos": {
+        "total_puertos_detectados": 227,
+        "hosts_con_puertos": 22,
+        "total_hosts_escaneados": 89
+    }
+}

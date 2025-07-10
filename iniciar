@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# SECUREVAL - Sistema de Evaluación de Seguridad
+# Script de inicio para lanzar el sistema
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Banner del sistema
+echo -e "${BLUE}"
+echo "╔════════════════════════════════════════════════════════════════╗"
+echo "║                           SECUREVAL                           ║"
+echo "║                  Sistema de Evaluación de Seguridad           ║"
+echo "║                        Versión 2.0                            ║"
+echo "╚════════════════════════════════════════════════════════════════╝"
+echo -e "${NC}"
+
+# Verificar que estamos en el directorio correcto
+if [ ! -f "app/main.py" ]; then
+    echo -e "${RED}❌ Error: No se encontró el sistema SECUREVAL en este directorio${NC}"
+    echo -e "${YELLOW}💡 Ejecuta este script desde el directorio raíz de SECUREVAL${NC}"
+    exit 1
+fi
+
+# Verificar Python 3
+if ! command -v python3 &> /dev/null; then
+    echo -e "${RED}❌ Error: Python 3 no está instalado${NC}"
+    echo -e "${YELLOW}💡 Instala Python 3: sudo apt install python3${NC}"
+    exit 1
+fi
+
+# Verificar tkinter
+echo -e "${BLUE}🔍 Verificando dependencias...${NC}"
+if ! python3 -c "import tkinter" 2>/dev/null; then
+    echo -e "${RED}❌ Error: tkinter no está disponible${NC}"
+    echo -e "${YELLOW}💡 Instala tkinter: sudo apt install python3-tk${NC}"
+    exit 1
+fi
+
+# Test rápido del sistema (opcional)
+if [ "$1" = "--test" ] || [ "$1" = "-t" ]; then
+    echo -e "${BLUE}🧪 Ejecutando test rápido del sistema...${NC}"
+    python3 test_rapido.py
+    exit $?
+fi
+
+# Verificar dependencias opcionales
+python3 -c "import psutil" 2>/dev/null
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✅ Monitor de sistema disponible (psutil)${NC}"
+else
+    echo -e "${YELLOW}⚠️  Monitor de sistema limitado (instala: pip3 install psutil)${NC}"
+fi
+
+# Mostrar información del sistema
+echo -e "${BLUE}📋 Información del sistema:${NC}"
+echo -e "   🐍 Python: $(python3 --version)"
+echo -e "   📁 Directorio: $(pwd)"
+echo -e "   💻 Usuario: $(whoami)"
+
+# Lanzar el sistema
+echo -e "\n${GREEN}🚀 Iniciando SECUREVAL...${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+# Ejecutar el sistema principal
+python3 -m app.main
+
+# Capturar código de salida
+exit_code=$?
+
+echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+if [ $exit_code -eq 0 ]; then
+    echo -e "${GREEN}✅ SECUREVAL finalizado correctamente${NC}"
+else
+    echo -e "${RED}❌ SECUREVAL terminó con errores (código: $exit_code)${NC}"
+fi
+
+echo -e "${BLUE}👋 ¡Gracias por usar SECUREVAL!${NC}"
+exit $exit_code

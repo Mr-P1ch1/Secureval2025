@@ -1,0 +1,194 @@
+{
+    "http://vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://www.registro.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenSSL",
+            "Apache",
+            "PHP",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 7,
+        "total_cves": 21,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 4.86
+    },
+    "http://webmail.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://registro.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenSSL",
+            "Apache",
+            "RedirectLocation",
+            "PHP",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 8,
+        "total_cves": 21,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 3.88
+    },
+    "http://cpcontacts.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://cpcalendars.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://autodiscover.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://webdisk.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://cpanel.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://mail.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "http://www.vulqanopark.com": {
+        "tecnologias": [
+            "Country",
+            "Title",
+            "OpenResty",
+            "HTTPServer",
+            "IP"
+        ],
+        "total_tecnologias": 5,
+        "total_cves": 15,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 8.0
+    },
+    "https://registro.vulqanopark.com/": {
+        "tecnologias": [
+            "CodeIgniter-PHP-Framework",
+            "Country",
+            "Cookies",
+            "X-Powered-By",
+            "OpenSSL",
+            "Apache",
+            "RedirectLocation",
+            "PHP",
+            "HTTPServer",
+            "IP",
+            "HttpOnly"
+        ],
+        "total_tecnologias": 11,
+        "total_cves": 24,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 4.73
+    },
+    "https://registro.vulqanopark.com/app": {
+        "tecnologias": [
+            "CodeIgniter-PHP-Framework",
+            "Country",
+            "Title",
+            "Cookies",
+            "X-Powered-By",
+            "Script",
+            "OpenSSL",
+            "Apache",
+            "Bootstrap",
+            "HTML5",
+            "JQuery",
+            "Modernizr",
+            "X-UA-Compatible",
+            "PHP",
+            "HTTPServer",
+            "IP",
+            "HttpOnly"
+        ],
+        "total_tecnologias": 17,
+        "total_cves": 36,
+        "riesgo_max": 32.0,
+        "riesgo_promedio": 3.76
+    }
+}
